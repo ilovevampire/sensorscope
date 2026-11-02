@@ -1,0 +1,6 @@
+# Optional parameters for SensorScope.
+# Use with:  ros2 run sensorscope sensorscope --ros-args --params-file config/default.yaml
+sensorscope:
+  ros__parameters:
+    buffer_size: 20000        # samples kept per channel (100 Hz IMU -> ~200 s)
+    discovery_period_s: 2.0   # how often to look for new sensor topics

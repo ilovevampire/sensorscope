@@ -1,6 +1,18 @@
-import math
+# Copyright 2026 Vishal Gaud
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-import numpy as np
+import math
 
 from sensorscope.core.buffers import RingBuffer
 from sensorscope.core.stats import RateEstimator, summarize
@@ -37,29 +49,29 @@ def test_rate_estimator():
 
 
 def test_summarize_ignores_nan():
-    s = summarize([1.0, 2.0, float("nan"), 3.0])
-    assert s["mean"] == 2.0 and s["min"] == 1.0 and s["max"] == 3.0 and s["last"] == 3.0
-    assert math.isnan(summarize([float("nan")])["mean"])
+    s = summarize([1.0, 2.0, float('nan'), 3.0])
+    assert s['mean'] == 2.0 and s['min'] == 1.0 and s['max'] == 3.0 and s['last'] == 3.0
+    assert math.isnan(summarize([float('nan')])['mean'])
 
 
 def test_stream_push_snapshot_csv(tmp_path):
-    stream = SensorStream("/imu/data", REGISTRY["sensor_msgs/msg/Imu"], capacity=100)
+    stream = SensorStream('/imu/data', REGISTRY['sensor_msgs/msg/Imu'], capacity=100)
     for i in range(10):
-        stream.push(i * 0.01, {"ax": float(i), "ay": 0.0})
+        stream.push(i * 0.01, {'ax': float(i), 'ay': 0.0})
     snap = stream.snapshot()
     assert set(snap) == set(stream.spec.channels)
-    assert len(snap["ax"][0]) == 10 and math.isnan(snap["gz"][1][0])
+    assert len(snap['ax'][0]) == 10 and math.isnan(snap['gz'][1][0])
     assert stream.seconds_since_last() is not None
-    out = tmp_path / "imu.csv"
+    out = tmp_path / 'imu.csv'
     assert stream.to_csv(str(out)) == 10
     lines = out.read_text().splitlines()
-    assert lines[0].startswith("time_s,ax,ay,az") and len(lines) == 11
+    assert lines[0].startswith('time_s,ax,ay,az') and len(lines) == 11
 
 
 def test_stream_clears_on_time_jump_back():
-    stream = SensorStream("/x", REGISTRY["nav_msgs/msg/Odometry"], capacity=100)
+    stream = SensorStream('/x', REGISTRY['nav_msgs/msg/Odometry'], capacity=100)
     for t in (1.0, 2.0, 3.0):
-        stream.push(t, {"x": t})
-    stream.push(0.5, {"x": 0.5})  # e.g. simulation reset
-    t, _ = stream.snapshot()["x"]
+        stream.push(t, {'x': t})
+    stream.push(0.5, {'x': 0.5})  # e.g. simulation reset
+    t, _ = stream.snapshot()['x']
     assert list(t) == [0.5]

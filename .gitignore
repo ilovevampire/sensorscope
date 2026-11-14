@@ -1,11 +1,19 @@
+# Python
 __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .venv/
+venv/
+
+# ROS 2 / colcon workspace output
 build/
 install/
 log/
+
+# Data, recordings and generated artefacts (never publish these)
 *.csv
 *.bag
 *.db3
@@ -14,6 +22,10 @@ metadata.yaml
 sensorscope_report*.html
 report.html
 *.zip
+
+# Editors / OS
 .vscode/
 .idea/
+*.swp
 .DS_Store
+Thumbs.db

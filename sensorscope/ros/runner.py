@@ -1,3 +1,17 @@
+# Copyright 2026 Vishal Gaud
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """RosRunner: owns rclpy init/shutdown and spins the node on a background thread."""
 
 from __future__ import annotations
@@ -8,12 +22,13 @@ from typing import Dict, List, Optional
 import rclpy
 from rclpy.executors import ExternalShutdownException, SingleThreadedExecutor
 
-from ..core.stream import SensorStream
 from .node import SensorScopeNode
+from ..core.stream import SensorStream
 
 
 class RosRunner:
-    """Qt owns the main thread, so ROS spins in the background.
+    """
+    Qt owns the main thread, so ROS spins in the background.
 
     Exposes ``get_streams()`` so the GUI only depends on that one method.
     """
@@ -29,7 +44,7 @@ class RosRunner:
         self.node = SensorScopeNode()
         self._executor = SingleThreadedExecutor()
         self._executor.add_node(self.node)
-        self._thread = threading.Thread(target=self._spin, name="sensorscope-ros", daemon=True)
+        self._thread = threading.Thread(target=self._spin, name='sensorscope-ros', daemon=True)
         self._thread.start()
 
     def _spin(self) -> None:

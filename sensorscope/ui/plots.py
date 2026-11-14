@@ -1,3 +1,17 @@
+# Copyright 2026 Vishal Gaud
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """Plot widgets: scrolling time series, LiDAR scan view, and XY track view."""
 
 from __future__ import annotations
@@ -5,7 +19,7 @@ from __future__ import annotations
 import numpy as np
 import pyqtgraph as pg
 
-PALETTE = ["#4fc3f7", "#ff8a65", "#81c784", "#ba68c8", "#ffd54f", "#4db6ac"]
+PALETTE = ['#4fc3f7', '#ff8a65', '#81c784', '#ba68c8', '#ffd54f', '#4db6ac']
 _EMPTY = (np.empty(0), np.empty(0))
 
 
@@ -15,16 +29,16 @@ class TimeSeriesPlot(pg.PlotWidget):
     def __init__(self, title: str, channels, parent=None) -> None:
         super().__init__(parent=parent)
         self.setMinimumHeight(120)
-        self.setTitle(title, size="10pt")
+        self.setTitle(title, size='10pt')
         self.showGrid(x=True, y=True, alpha=0.25)
-        self.setLabel("bottom", "time (s)")
+        self.setLabel('bottom', 'time (s)')
         self.addLegend(offset=(10, 5))
         self.setClipToView(True)
-        self.setDownsampling(auto=True, mode="peak")
+        self.setDownsampling(auto=True, mode='peak')
         self._curves = {}
         for i, name in enumerate(channels):
             pen = pg.mkPen(PALETTE[i % len(PALETTE)], width=1.5)
-            self._curves[name] = self.plot(pen=pen, name=name, connect="finite")
+            self._curves[name] = self.plot(pen=pen, name=name, connect='finite')
 
     def update_data(self, snap, t_ref: float, window_s: float) -> None:
         for name, curve in self._curves.items():
@@ -38,18 +52,20 @@ class ScanView(pg.PlotWidget):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent=parent)
-        self.setTitle("Latest scan, sensor frame (m)", size="10pt")
+        self.setTitle('Latest scan, sensor frame (m)', size='10pt')
         self.setAspectLocked(True)
         self.showGrid(x=True, y=True, alpha=0.25)
-        self._scatter = pg.ScatterPlotItem(size=3, pen=pg.mkPen(None), brush=pg.mkBrush("#4fc3f7"))
+        self._scatter = pg.ScatterPlotItem(size=3, pen=pg.mkPen(None), brush=pg.mkBrush('#4fc3f7'))
         self.addItem(self._scatter)
-        self.addItem(pg.ScatterPlotItem([0], [0], size=10, pen=pg.mkPen(None), brush=pg.mkBrush("#ff5555")))
+        self.addItem(
+            pg.ScatterPlotItem([0], [0], size=10, pen=pg.mkPen(None), brush=pg.mkBrush('#ff5555'))
+        )
         self._fitted = False
 
     def update_view(self, stream, snap, t_ref: float) -> None:
         if stream.extra is None:
             return
-        xs, ys = stream.extra
+        xs, ys = stream.extra.xy()  # extra is a sensors.lidar.ScanData
         self._scatter.setData(x=xs, y=ys)
         if not self._fitted and len(xs):
             self.autoRange()  # fit once; after that the user may zoom freely
@@ -61,12 +77,18 @@ class TrackView(pg.PlotWidget):
 
     def __init__(self, title: str, parent=None) -> None:
         super().__init__(parent=parent)
-        self.setTitle(title, size="10pt")
+        self.setTitle(title, size='10pt')
         self.setAspectLocked(True)
         self.showGrid(x=True, y=True, alpha=0.25)
-        self._path = self.plot(pen=pg.mkPen("#81c784", width=1.5), symbol="o", symbolSize=3,
-                               symbolBrush="#81c784", symbolPen=None, connect="finite")
-        self._head = pg.ScatterPlotItem(size=10, pen=pg.mkPen(None), brush=pg.mkBrush("#ff5555"))
+        self._path = self.plot(
+            pen=pg.mkPen('#81c784', width=1.5),
+            symbol='o',
+            symbolSize=3,
+            symbolBrush='#81c784',
+            symbolPen=None,
+            connect='finite',
+        )
+        self._head = pg.ScatterPlotItem(size=10, pen=pg.mkPen(None), brush=pg.mkBrush('#ff5555'))
         self.addItem(self._head)
 
     def update_view(self, stream, snap, t_ref: float) -> None:

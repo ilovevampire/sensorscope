@@ -2,10 +2,18 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>sensorscope</name>
-  <version>0.1.0</version>
-  <description>Live visualisation and analysis of ROS 2 sensor data (IMU, LiDAR, GPS, odometry).</description>
-  <maintainer email="uselessm61@gmail.com">Your Name</VishalGaud>
+  <version>0.2.0</version>
+  <description>
+    Live visualisation and analysis of ROS 2 sensor data. Auto-discovers IMU, LiDAR, GPS and
+    odometry topics, plots them live with statistics, and analyses captures (IMU Allan variance,
+    LiDAR static-wall noise, GPS CEP and covariance checks) to produce sensor tuning values.
+  </description>
+  <maintainer email="uselessm61@gmail.com">Vishal Gaud</maintainer>
   <license>Apache-2.0</license>
+  <url type="website">https://github.com/ilovevampire/sensorscope</url>
+  <url type="repository">https://github.com/ilovevampire/sensorscope</url>
+  <url type="bugtracker">https://github.com/ilovevampire/sensorscope/issues</url>
+  <author email="you@example.com">Vishal Gaud</author>
 
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
@@ -14,8 +22,13 @@
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
-  <!-- PySide6 and pyqtgraph are installed with pip, see docs/SETUP.md -->
+  <exec_depend>rosbag2_py</exec_depend>
+  <exec_depend>python3-matplotlib</exec_depend>  <!-- only for the report command -->
+  <!-- The GUI needs PySide6 and pyqtgraph, installed with pip (see docs/SETUP.md). -->
 
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
 
   <export>

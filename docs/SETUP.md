@@ -6,8 +6,10 @@ Install ROS 2 Jazzy first: https://docs.ros.org/en/jazzy/Installation.html
 
 ```bash
 sudo apt update
-sudo apt install -y python3-venv python3-pip libxcb-cursor0 python3-colcon-common-extensions
+sudo apt install -y python3-venv python3-pip libxcb-cursor0 python3-colcon-common-extensions python3-matplotlib
 ```
+
+`python3-matplotlib` is only needed for the `report` command.
 
 ## 2. Create a workspace and a Python environment
 
@@ -47,25 +49,32 @@ source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 ```
 
-Demo with synthetic sensors (no hardware needed):
-
-```bash
-ros2 launch sensorscope demo.launch.py
-```
-
 Your own robot:
 
 ```bash
 ros2 launch sensorscope sensorscope.launch.py
 ```
 
-Gazebo or a bag played with `--clock`:
+Gazebo, or a bag played with `--clock`:
 
 ```bash
 ros2 launch sensorscope sensorscope.launch.py use_sim_time:=true
 ```
 
-SensorScope finds `Imu`, `LaserScan`, `NavSatFix` and `Odometry` topics by itself and opens one tab per topic.
+No hardware (synthetic sensors):
+
+```bash
+ros2 launch sensorscope demo.launch.py                 # a robot driving a circle
+ros2 launch sensorscope demo.launch.py static:=true    # still sensors, for the Analysis tabs
+```
+
+Report from a recorded bag:
+
+```bash
+ros2 run sensorscope report my_bag -o report.html
+```
+
+In the app, **Help > Quick start** (F1) explains the tabs. [ANALYSIS.md](ANALYSIS.md) explains the results.
 
 ## Troubleshooting
 

@@ -1,3 +1,17 @@
+# Copyright 2026 Vishal Gaud
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """Fixed-size, thread-safe circular buffer for (time, value) samples."""
 
 from __future__ import annotations
@@ -9,7 +23,8 @@ import numpy as np
 
 
 class RingBuffer:
-    """Circular buffer holding the most recent ``capacity`` samples.
+    """
+    Circular buffer holding the most recent ``capacity`` samples.
 
     Written from the ROS thread, read from the GUI thread, so every access
     goes through a lock. ``get`` always returns copies ordered oldest-first.
@@ -17,7 +32,7 @@ class RingBuffer:
 
     def __init__(self, capacity: int = 20000) -> None:
         if capacity <= 0:
-            raise ValueError("capacity must be positive")
+            raise ValueError('capacity must be positive')
         self.capacity = int(capacity)
         self._t = np.zeros(self.capacity, dtype=float)
         self._v = np.zeros(self.capacity, dtype=float)
@@ -42,7 +57,8 @@ class RingBuffer:
             self._count = 0
 
     def get(self, window_s: Optional[float] = None) -> Tuple[np.ndarray, np.ndarray]:
-        """Return ``(t, v)`` copies, oldest first.
+        """
+        Return ``(t, v)`` copies, oldest first.
 
         If ``window_s`` is given, only samples within the last ``window_s``
         seconds (relative to the newest sample) are returned.
@@ -56,6 +72,6 @@ class RingBuffer:
             t = self._t[idx]
             v = self._v[idx]
         if window_s is not None:
-            start = int(np.searchsorted(t, t[-1] - window_s, side="left"))
+            start = int(np.searchsorted(t, t[-1] - window_s, side='left'))
             t, v = t[start:], v[start:]
         return t, v
